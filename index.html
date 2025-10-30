@@ -5,17 +5,54 @@ layout: default
   <aside class="sidebar">
     <h2>Entry List</h2>
     <input type="text" id="search" placeholder="Ara...">
-    <ul id="entry-list">
-      {% assign sorted_entries = site.entries | sort: 'word' %}
-      {% for entry in sorted_entries %}
-        <li><a href="{{ entry.url | relative_url }}">{{ entry.word }}</a></li>
-      {% endfor %}
-    </ul>
+    <ul id="entry-list"></ul>
   </aside>
 
-  <main class="entry-content">
-    <p>Bir sözcük seçin veya arayın.</p>
+  <main class="entry-content" id="entry-display">
+    <p>Bir kelime seçin veya arayın.</p>
   </main>
 </div>
 
-<script src="{{ '/assets/js/search.js' | relative_url }}"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  fetch('{{ "/entries.json" | relative_url }}')
+    .then(res => res.json())
+    .then(entries => {
+      const entryList = document.getElementById('entry-list');
+      const entryDisplay = document.getElementById('entry-display');
+      const searchInput = document.getElementById('search');
+
+      function renderList(list) {
+        entryList.innerHTML = list.map(e => `<li><a href="#" data-word="${e.word}">${e.word}</a></li>`).join('');
+      }
+
+      function showEntry(word) {
+        const entry = entries.find(e => e.word === word);
+        if (!entry) return;
+        entryDisplay.innerHTML = `
+          <h1>${entry.word}</h1>
+          <p><strong>Part of speech:</strong> ${entry.part_of_speech}</p>
+          <p><strong>Definition:</strong> ${entry.definition}</p>
+          ${entry.example ? `<p><strong>Example:</strong> ${entry.example}</p>` : ''}
+          ${entry.origin ? `<p><strong>Origin:</strong> ${entry.origin}</p>` : ''}
+        `;
+      }
+
+      renderList(entries);
+
+      entryList.addEventListener('click', e => {
+        if (e.target.tagName === 'A') {
+          e.preventDefault();
+          const word = e.target.dataset.word;
+          showEntry(word);
+        }
+      });
+
+      const fuse = new Fuse(entries, { keys: ['word', 'definition', 'tags'], threshold: 0.3 });
+      searchInput.addEventListener('input', () => {
+        const results = fuse.search(searchInput.value).map(r => r.item);
+        renderList(results.length ? results : []);
+      });
+    });
+});
+</script>
