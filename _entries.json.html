@@ -1,0 +1,14 @@
+---
+layout: null
+permalink: /entries.json
+---
+[
+{% for entry in site.entries %}
+  {
+    "word": "{{ entry.word | escape }}",
+    "definition": "{{ entry.definition | escape }}",
+    "tags": {{ entry.tags | jsonify }},
+    "url": "{{ entry.url | relative_url }}"
+  }{% unless forloop.last %},{% endunless %}
+{% endfor %}
+]
