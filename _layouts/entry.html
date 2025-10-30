@@ -1,0 +1,14 @@
+---
+layout: default
+---
+<div class="entry-page">
+  <h1>{{ page.word }}</h1>
+  <p><strong>Part of speech:</strong> {{ page.part_of_speech }}</p>
+  <p><strong>Definition:</strong> {{ page.definition }}</p>
+  {% if page.example %}
+    <p><strong>Example:</strong> {{ page.example }}</p>
+  {% endif %}
+  {% if page.origin %}
+    <p><strong>Origin:</strong> {{ page.origin }}</p>
+  {% endif %}
+</div>
