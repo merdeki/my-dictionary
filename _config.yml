@@ -1,16 +1,9 @@
-title: My Dictionary
-description: A personal dictionary and language reference
-baseurl: ""
-url: "https://merdeki.github.io/my-dictionary/"
-
+title: Türkçe Sözlük
+baseurl: "" 
+url: "https://merdeki.github.io/my-dictionary"
+markdown: kramdown
+theme: null
 collections:
-  words:
+  entries:
     output: true
-    permalink: /word/:name/
-
-defaults:
-  - scope:
-      path: "_words"
-      type: "words"
-    values:
-      layout: word
+    permalink: /:collection/:name/
