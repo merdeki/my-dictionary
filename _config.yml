@@ -1,9 +1,13 @@
 title: Türkçe Sözlük
-baseurl: "" 
-url: "https://merdeki.github.io/my-dictionary"
-markdown: kramdown
-theme: null
+baseurl: "/my-dictionary"   
+url: "https://merdeki.github.io" 
 collections:
   entries:
     output: true
-    permalink: /:collection/:name/
+    permalink: /entries/:name/
+defaults:
+  - scope:
+      path: "_entries"
+      type: "entries"
+    values:
+      layout: "entry"
