@@ -4,11 +4,14 @@ permalink: /entries.json
 ---
 [
 {% for entry in site.entries %}
-  {
-    "word": "{{ entry.word | escape }}",
-    "definition": "{{ entry.definition | escape }}",
-    "tags": {{ entry.tags | jsonify }},
-    "url": "{{ entry.url | relative_url }}"
-  }{% unless forloop.last %},{% endunless %}
+{
+  "word": "{{ entry.word | escape }}",
+  "definition": "{{ entry.definition | escape }}",
+  "example": "{{ entry.example | escape }}",
+  "part_of_speech": "{{ entry.part_of_speech | escape }}",
+  "origin": "{{ entry.origin | escape }}",
+  "tags": {{ entry.tags | jsonify }},
+  "url": "{{ entry.url | relative_url }}"
+}{% unless forloop.last %},{% endunless %}
 {% endfor %}
 ]
