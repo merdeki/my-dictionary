@@ -1,0 +1,32 @@
+body {
+  font-family: Georgia, serif;
+  margin: 0;
+  background: #fff;
+  color: #111;
+}
+header, footer {
+  text-align: center;
+  padding: 1rem;
+  background: #f0f0f0;
+}
+.dictionary {
+  display: flex;
+  max-width: 1200px;
+  margin: 2rem auto;
+}
+.sidebar {
+  width: 30%;
+  padding-right: 1rem;
+  border-right: 1px solid #ccc;
+}
+.sidebar input {
+  width: 100%;
+  padding: 0.5rem;
+  margin-bottom: 1rem;
+}
+.entry-content {
+  width: 70%;
+  padding-left: 1rem;
+}
+a { text-decoration: none; color: #0066cc; }
+a:hover { text-decoration: underline; }
