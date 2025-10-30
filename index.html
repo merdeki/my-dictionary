@@ -1,57 +1,44 @@
----
-layout: default
----
-<div class="dictionary">
-  <aside class="sidebar">
-    <h2>Entry List</h2>
-    <input type="text" id="search" placeholder="Ara...">
-    <ul id="entry-list"></ul>
-  </aside>
-
-  <main class="entry-content" id="entry-display">
-    <p>Bir kelime seçin veya arayın.</p>
-  </main>
-</div>
-
 <script>
-document.addEventListener("DOMContentLoaded", function() {
-  fetch('{{ "/entries.json" | relative_url }}')
-    .then(res => res.json())
+document.addEventListener("DOMContentLoaded", () => {
+  fetch('{{ "/my-dictionary/entries.json" | relative_url }}')
+    .then(r => r.json())
     .then(entries => {
-      const entryList = document.getElementById('entry-list');
-      const entryDisplay = document.getElementById('entry-display');
-      const searchInput = document.getElementById('search');
+      const list = document.getElementById('entry-list');
+      const box  = document.getElementById('search');
+      const show = document.getElementById('entry-display');
 
-      function renderList(list) {
-        entryList.innerHTML = list.map(e => `<li><a href="#" data-word="${e.word}">${e.word}</a></li>`).join('');
-      }
+      // build index list
+      list.innerHTML = entries
+        .sort((a,b)=>a.word.localeCompare(b.word))
+        .map(e=>`<li><a href="#" data-word="${e.word}">${e.word}</a></li>`)
+        .join('');
 
-      function showEntry(word) {
-        const entry = entries.find(e => e.word === word);
-        if (!entry) return;
-        entryDisplay.innerHTML = `
-          <h1>${entry.word}</h1>
-          <p><strong>Part of speech:</strong> ${entry.part_of_speech}</p>
-          <p><strong>Definition:</strong> ${entry.definition}</p>
-          ${entry.example ? `<p><strong>Example:</strong> ${entry.example}</p>` : ''}
-          ${entry.origin ? `<p><strong>Origin:</strong> ${entry.origin}</p>` : ''}
+      function render(word){
+        const e = entries.find(x=>x.word===word);
+        if(!e) return;
+        show.innerHTML = `
+          <h1>${e.word}</h1>
+          <p><b>Tanım:</b> ${e.definition}</p>
+          ${e.example ? `<p><b>Örnek:</b> ${e.example}</p>` : ""}
+          ${e.origin ? `<p><b>Köken:</b> ${e.origin}</p>` : ""}
         `;
       }
 
-      renderList(entries);
-
-      entryList.addEventListener('click', e => {
-        if (e.target.tagName === 'A') {
-          e.preventDefault();
-          const word = e.target.dataset.word;
-          showEntry(word);
+      // click-to-view
+      list.addEventListener('click',ev=>{
+        if(ev.target.tagName==='A'){
+          ev.preventDefault();
+          render(ev.target.dataset.word);
         }
       });
 
-      const fuse = new Fuse(entries, { keys: ['word', 'definition', 'tags'], threshold: 0.3 });
-      searchInput.addEventListener('input', () => {
-        const results = fuse.search(searchInput.value).map(r => r.item);
-        renderList(results.length ? results : []);
+      // live search
+      box.addEventListener('input',()=>{
+        const q = box.value.toLowerCase();
+        const filtered = entries.filter(e=>e.word.toLowerCase().includes(q));
+        list.innerHTML = filtered
+          .map(e=>`<li><a href="#" data-word="${e.word}">${e.word}</a></li>`)
+          .join('');
       });
     });
 });
